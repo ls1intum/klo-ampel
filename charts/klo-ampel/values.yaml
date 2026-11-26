@@ -1,0 +1,50 @@
+image:
+  repository: ghcr.io/ls1intum/klo-ampel
+  # Defaults to the chart's appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Public hostname. The app is served at https://<host>/.
+host: klo-ampel.example.com
+
+oidc:
+  # Keycloak realm URL, e.g. https://keycloak.example.com/realms/myrealm
+  issuerUrl: ""
+  clientId: klo-ampel
+  # Set either clientSecret or existingSecret (with key "client-secret").
+  clientSecret: ""
+  existingSecret: ""
+  # Only users with this role may log in.
+  requiredRole: klo-ampel
+  # Empty: requiredRole is a realm role. Otherwise the client whose client role is checked.
+  roleClient: ""
+
+sessionTtl: 12h
+
+# Gateway API route. TLS is handled by the Gateway listener (e.g. via cert-manager).
+httpRoute:
+  enabled: true
+  parentRefs:
+    - name: gateway
+      namespace: gateway
+      # sectionName: https
+  # SSE streams stay open for hours. "0s" disables the gateway's request timeout.
+  # Set to "" if your Gateway implementation does not support route timeouts;
+  # clients then reconnect automatically whenever the gateway cuts the stream.
+  requestTimeout: "0s"
+  annotations: {}
+
+service:
+  port: 80
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

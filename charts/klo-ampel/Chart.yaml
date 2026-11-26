@@ -1,0 +1,7 @@
+apiVersion: v2
+name: klo-ampel
+description: Live toilet availability for exams spread over several lecture halls
+type: application
+# Both are set from the git tag on release.
+version: 0.1.0
+appVersion: "0.1.0"

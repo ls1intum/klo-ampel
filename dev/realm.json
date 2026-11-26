@@ -1,0 +1,45 @@
+{
+  "realm": "klo-ampel",
+  "enabled": true,
+  "roles": {
+    "realm": [{ "name": "klo-ampel", "description": "May use Klo-Ampel" }]
+  },
+  "clients": [
+    {
+      "clientId": "klo-ampel",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "dev-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://127.0.0.1:8080/auth/callback", "http://127.0.0.1:5173/auth/callback"],
+      "webOrigins": ["+"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://127.0.0.1:8080/*##http://127.0.0.1:5173/*"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "staff",
+      "firstName": "Sam",
+      "lastName": "Staff",
+      "email": "staff@example.test",
+      "emailVerified": true,
+      "enabled": true,
+      "realmRoles": ["default-roles-klo-ampel", "klo-ampel"],
+      "credentials": [{ "type": "password", "value": "staff" }]
+    },
+    {
+      "username": "student",
+      "firstName": "Stu",
+      "lastName": "Dent",
+      "email": "student@example.test",
+      "emailVerified": true,
+      "enabled": true,
+      "realmRoles": ["default-roles-klo-ampel"],
+      "credentials": [{ "type": "password", "value": "student" }]
+    }
+  ]
+}

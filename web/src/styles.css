@@ -1,0 +1,288 @@
+:root {
+  --free: #15803d;
+  --occupied: #c81e1e;
+  --bg: #0f1115;
+  --card: #1a1d24;
+  --text: #f1f2f4;
+  --muted: #8b919c;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: progress;
+}
+
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Room list */
+
+.list {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.list header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.list h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.logo {
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--occupied) 50%, var(--free) 50%);
+}
+
+.user {
+  display: flex;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.create {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.create input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  color: inherit;
+  background: var(--card);
+  border: 1px solid #2c313b;
+  border-radius: 0.75rem;
+}
+
+.create input:focus {
+  outline: 2px solid #4b8bf5;
+  outline-offset: 1px;
+}
+
+.create button {
+  padding: 0 1.4rem;
+  font-weight: 600;
+  color: #fff;
+  background: #2f6fe0;
+  border: 0;
+  border-radius: 0.75rem;
+}
+
+.rooms {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.rooms li {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--card);
+  border-left: 0.5rem solid var(--free);
+  border-radius: 0.75rem;
+  transition: border-color 0.3s;
+}
+
+.rooms li.occupied {
+  border-left-color: var(--occupied);
+}
+
+.room-link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1.1rem 1.25rem;
+  text-decoration: none;
+}
+
+.room-link:hover {
+  background: #22262f;
+}
+
+.room-link .name {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.room-link .status {
+  color: var(--muted);
+}
+
+.occupied .status {
+  color: #f08a8a;
+}
+
+.free .status {
+  color: #7fd49a;
+}
+
+.delete {
+  padding: 0 1.25rem;
+  color: var(--muted);
+  background: none;
+  border: 0;
+}
+
+.delete:hover {
+  color: #fff;
+  background: #3a1d1d;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: #ff9b9b;
+}
+
+.banner {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  z-index: 10;
+  transform: translateX(-50%);
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  color: #201600;
+  background: #facc15;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.4);
+}
+
+/* Full-screen room view, meant for the projector */
+
+.room {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  justify-items: center;
+  min-height: 100dvh;
+  padding: 1rem 1.5rem 2.5rem;
+  color: #fff;
+  background: var(--bg);
+  transition: background-color 0.35s;
+}
+
+.room.free {
+  background: var(--free);
+}
+
+.room.occupied {
+  background: var(--occupied);
+}
+
+.bar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  opacity: 0.7;
+}
+
+.bar a {
+  text-decoration: none;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.room-name {
+  margin: 0;
+  font-size: clamp(1.5rem, 4.5vw, 4rem);
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.state {
+  margin: 0;
+  font-size: clamp(4rem, 17vw, 18rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.since {
+  margin: 0.75rem 0 0;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  opacity: 0.85;
+}
+
+.toggle {
+  min-width: min(22rem, 100%);
+  padding: 1.1rem 2.5rem;
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-weight: 700;
+  background: rgb(255 255 255 / 0.95);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.25);
+  transition: transform 0.1s;
+}
+
+.free .toggle {
+  color: var(--free);
+}
+
+.occupied .toggle {
+  color: var(--occupied);
+}
+
+.toggle:active {
+  transform: scale(0.97);
+}
+
+.room .error {
+  color: #fff;
+  font-weight: 600;
+}

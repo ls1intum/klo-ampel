@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "klo-ampel.fullname" . }}
+  labels:
+    {{- include "klo-ampel.labels" . | nindent 4 }}
+spec:
+  # State and sessions live in memory, so there is exactly one pod and never two at once.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "klo-ampel.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "klo-ampel.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: klo-ampel
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PUBLIC_URL
+              value: "https://{{ .Values.host }}"
+            - name: OIDC_ISSUER_URL
+              value: {{ required "oidc.issuerUrl is required" .Values.oidc.issuerUrl | quote }}
+            - name: OIDC_CLIENT_ID
+              value: {{ .Values.oidc.clientId | quote }}
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "klo-ampel.secretName" . }}
+                  key: client-secret
+            - name: OIDC_REQUIRED_ROLE
+              value: {{ required "oidc.requiredRole is required" .Values.oidc.requiredRole | quote }}
+            - name: OIDC_ROLE_CLIENT
+              value: {{ .Values.oidc.roleClient | quote }}
+            - name: SESSION_TTL
+              value: {{ .Values.sessionTtl | quote }}
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
